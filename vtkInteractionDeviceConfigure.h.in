@@ -1,0 +1,39 @@
+/*=========================================================================
+
+  Name:        vtkInteractionDeviceConfigure.h
+
+  Author:      David Borland, The Renaissance Computing Institute (RENCI)
+
+  Copyright:   The Renaissance Computing Institute (RENCI)
+
+  License:     Licensed under the RENCI Open Source Software License v. 1.0.
+               
+               See included License.txt or 
+               http://www.renci.org/resources/open-source-software-license
+               for details.
+
+=========================================================================*/
+
+#ifndef vtkInteractionDeviceConfigure_h
+#define vtkInteractionDeviceConfigure_h
+
+#cmakedefine vtkInteractionDevice_BUILD_SHARED_LIBS
+#ifndef vtkInteractionDevice_BUILD_SHARED_LIBS
+# define vtkInteractionDevice_STATIC
+#endif
+
+#if defined(_MSC_VER) && !defined(vtkInteractionDevice_STATIC)
+# pragma warning ( disable : 4275 )
+#endif
+
+#if defined(WIN32) && !defined(vtkInteractionDevice_STATIC)
+# if defined(vtkInteractionDevice_EXPORTS)
+#  define VTK_INTERACTIONDEVICE_EXPORT __declspec( dllexport ) 
+# else
+#  define VTK_INTERACTIONDEVICE_EXPORT __declspec( dllimport ) 
+# endif
+#else
+# define VTK_INTERACTIONDEVICE_EXPORT
+#endif
+
+#endif
