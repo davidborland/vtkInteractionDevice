@@ -73,10 +73,10 @@ INCLUDE_DIRECTORIES( ${vtkInteractionDevice_BINARY_DIR} )
 # Include vrpn
 #######################################
 
-FIND_PATH( VRPN_DIR vrpnBaseClass.h )
+FIND_PATH(VRPN_INCLUDE_DIR vrpn_Tracker.h)
+FIND_LIBRARY(VRPN_LIBRARY vrpn)
 
-INCLUDE_DIRECTORIES( ${VRPN_DIR} )
-
+INCLUDE_DIRECTORIES( ${VRPN_INCLUDE_DIR} )
 
 #######################################
 # Include vtkInteractionDevice code
@@ -98,10 +98,18 @@ SET( SRC vtkDeviceInteractor.h vtkDeviceInteractor.cxx
          vtkVRPNTracker.h vtkVRPNTracker.cxx
          vtkVRPNTrackerStyleCamera.h vtkVRPNTrackerStyleCamera.cxx
          vtkWiiMoteStyleCamera.h vtkWiiMoteStyleCamera.cxx
-         vtkWiiMoteStyle.h vtkWiiMoteStyle.cxx
-         vtkWin32RenderWindowDeviceInteractor.h vtkWin32RenderWindowDeviceInteractor.cxx )
-ADD_LIBRARY( vtkInteractionDevice ${SRC} )
+         vtkWiiMoteStyle.h vtkWiiMoteStyle.cxx )
 
+IF (WIN32)
+  SET( SRC ${SRC}
+    vtkWin32RenderWindowDeviceInteractor.h vtkWin32RenderWindowDeviceInteractor.cxx )
+ENDIF (WIN32)
+ADD_LIBRARY( vtkInteractionDevice ${SRC} )
+TARGET_LINK_LIBRARIES( vtkInteractionDevice
+  vtkCommon
+  vtkRendering
+  ${VRPN_LIBRARY}
+)
 
 #######################################
 # Create Python library

@@ -44,7 +44,11 @@ vtkRenciMultiTouch::vtkRenciMultiTouch()
 vtkRenciMultiTouch::~vtkRenciMultiTouch() 
 {
   this->SetHostName(NULL);
+#ifdef WIN32
   closesocket(this->SocketDescriptor);
+#else
+  vtkErrorMacro(<<"Multi-touch currently only implemented on 32-bit Windows");
+#endif
 
   delete this->Internals;
 }
@@ -276,6 +280,7 @@ void vtkRenciMultiTouch::ClearGesture()
 //----------------------------------------------------------------------------
 int vtkRenciMultiTouch::CreateSocket()
 {
+#ifdef WIN32
   // Create a UDP socket
   this->SocketDescriptor = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
   if (this->SocketDescriptor == INVALID_SOCKET)
@@ -306,6 +311,9 @@ int vtkRenciMultiTouch::CreateSocket()
     closesocket(this->SocketDescriptor);
     return -1;
     }
+#else
+  vtkErrorMacro(<<"Multi-touch currently only implemented on 32-bit Windows");
+#endif
 
   return 0;
 }
@@ -313,7 +321,12 @@ int vtkRenciMultiTouch::CreateSocket()
 //----------------------------------------------------------------------------
 int vtkRenciMultiTouch::Receive(void* data, int length)
 {
+#ifdef WIN32
   return recvfrom(this->SocketDescriptor, (char*)data, length, 0, 0, 0);
+#else
+  vtkErrorMacro(<<"Multi-touch currently only implemented on 32-bit Windows");
+  return 0;
+#endif
 }
 
 //----------------------------------------------------------------------------
